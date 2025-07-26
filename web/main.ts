@@ -28,6 +28,13 @@ class GitGraphView {
 	};
 	private loadViewTo: GG.LoadGitGraphViewTo = null;
 
+	public scrollToCommitArgs: {
+		hash: string,
+		alwaysCenterCommit: boolean,
+		flash: boolean,
+		persistently: boolean
+	};
+
 	private readonly graph: Graph;
 	private readonly config: Config;
 
@@ -70,6 +77,13 @@ class GitGraphView {
 			configChanges: false,
 			requestingRepoInfo: false,
 			requestingConfig: false
+		};
+
+		this.scrollToCommitArgs = {
+			hash: '',
+			alwaysCenterCommit: false,
+			flash: false,
+			persistently: false
 		};
 
 		this.controlsElem = document.getElementById('controls')!;
@@ -154,7 +168,7 @@ class GitGraphView {
 		currentBtn.innerHTML = SVG_ICONS.current;
 		currentBtn.addEventListener('click', () => {
 			if (this.commitHead) {
-				this.scrollToCommit(this.commitHead, true, true);
+				this.scrollToCommit(this.commitHead, true, true, true);
 			}
 		});
 		fetchBtn.title = 'Fetch' + (this.config.fetchAndPrune ? ' & Prune' : '') + ' from Remote(s)';
@@ -429,6 +443,10 @@ class GitGraphView {
 		}
 
 		this.finaliseRepoLoad(true);
+
+		if (this.scrollToCommitArgs.persistently) {
+			this.scrollToCommit(this.scrollToCommitArgs.hash, this.scrollToCommitArgs.alwaysCenterCommit, this.scrollToCommitArgs.flash, this.scrollToCommitArgs.persistently);
+		}
 	}
 
 	private finaliseRepoLoad(didLoadRepoData: boolean) {
@@ -1992,11 +2010,32 @@ class GitGraphView {
 	 * @param hash The hash of the commit to scroll to.
 	 * @param alwaysCenterCommit TRUE => Always scroll the view to be centered on the commit. FALSE => Don't scroll the view if the commit is already within the visible portion of commits.
 	 * @param flash Should the commit flash after it has been scrolled to.
+	 * @param persistently Persistently find the commit even if it is not exists.
 	 */
-	public scrollToCommit(hash: string, alwaysCenterCommit: boolean, flash: boolean = false) {
-		const elem = findCommitElemWithId(getCommitElems(), this.getCommitId(hash));
-		if (elem === null) return;
+	public scrollToCommit(hash: string, alwaysCenterCommit: boolean, flash: boolean = false, persistently: boolean = false) {
+		this.scrollToCommitArgs.persistently = false;
 
+		const elem = findCommitElemWithId(getCommitElems(), this.getCommitId(hash));
+		if (elem === null) {
+			if (persistently) {
+				// Scroll to the last loaded commit for trigger loadMoreCommits()
+				const commits = document.getElementsByClassName('commit');
+				if (commits.length === 0) {
+					return;
+				}
+				const lastCommit = commits[commits.length - 1];
+				lastCommit.scrollIntoView();
+
+				this.scrollToCommitArgs = {
+					hash: hash,
+					alwaysCenterCommit: alwaysCenterCommit,
+					flash: flash,
+					persistently: persistently
+				};
+			}
+			// Do nothing
+			return;
+		}
 		let elemTop = this.controlsElem.clientHeight + elem.offsetTop;
 		if (alwaysCenterCommit || elemTop - 8 < this.viewElem.scrollTop || elemTop + 32 - this.viewElem.clientHeight > this.viewElem.scrollTop) {
 			this.viewElem.scroll(0, this.controlsElem.clientHeight + elem.offsetTop + 12 - this.viewElem.clientHeight / 2);
@@ -3458,6 +3497,18 @@ window.addEventListener('load', () => {
 				break;
 			case 'loadRepos':
 				gitGraph.loadRepos(msg.repos, msg.lastActiveRepo, msg.loadViewTo);
+				break;
+			case 'scrollToCommit':
+				if (VSCODE_API.getState()?.currentRepoLoading) { // if graph is creating
+					gitGraph.scrollToCommitArgs = {
+						hash: msg.hash,
+						alwaysCenterCommit: msg.alwaysCenterCommit,
+						flash: msg.flash,
+						persistently: msg.persistently
+					};
+				} else { // if graph exist
+					gitGraph.scrollToCommit(msg.hash, msg.alwaysCenterCommit, msg.flash, msg.persistently);
+				}
 				break;
 			case 'merge':
 				refreshOrDisplayError(msg.error, 'Unable to Merge ' + msg.actionOn);
