@@ -672,15 +672,20 @@
 					"default": "Default",
 					"description": "Specifies the message format used for the squashed commit (when the \"Squash Commits\" option is selected)."
 				},
-				"git-graph.dialog.rebase.ignoreDate": {
-					"type": "boolean",
-					"default": true,
-					"description": "Default state of the \"Ignore Date (non-interactive rebase only)\" checkbox."
-				},
 				"git-graph.dialog.rebase.launchInteractiveRebase": {
 					"type": "boolean",
+					"default": true,
+					"description": "Default state of the \"Interactive Rebase\" checkbox."
+				},
+				"git-graph.dialog.rebase.resetAuthorDate": {
+					"type": "boolean",
 					"default": false,
-					"description": "Default state of the \"Launch Interactive Rebase in new Terminal\" checkbox."
+					"description": "Default state of the \"Reset Author Date\" checkbox."
+				},
+				"git-graph.dialog.rebase.resetCommitterDate": {
+					"type": "boolean",
+					"default": true,
+					"description": "Default state of the \"Reset Committer Date\" checkbox."
 				},
 				"git-graph.dialog.resetCurrentBranchToCommit.mode": {
 					"type": "string",

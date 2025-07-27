@@ -784,7 +784,9 @@ export const enum GitVersionRequirement {
 	FetchAndPruneTags = '2.17.0',
 	GpgInfo = '2.4.0',
 	PushStash = '2.13.2',
-	TagDetails = '1.7.8'
+	TagDetails = '1.7.8',
+	ResetAuther = '2.38.0',
+	ResetCommitter = '2.7.0'
 }
 
 export const enum VsCodeVersionRequirement {

@@ -218,8 +218,9 @@ class Config {
 				squash: !!this.config.get('dialog.pullBranch.squashCommits', false)
 			},
 			rebase: {
-				ignoreDate: !!this.config.get('dialog.rebase.ignoreDate', true),
-				interactive: !!this.config.get('dialog.rebase.launchInteractiveRebase', false)
+				interactive: !!this.config.get('dialog.rebase.launchInteractiveRebase', true),
+				resetAuthorDate: !!this.config.get('dialog.rebase.resetAuthorDate', false),
+				resetCommitterDate: !!this.config.get('dialog.rebase.resetCommitterDate', true)
 			},
 			resetCommit: {
 				mode: resetCommitMode === 'Soft' ? GitResetMode.Soft : (resetCommitMode === 'Hard' ? GitResetMode.Hard : GitResetMode.Mixed)

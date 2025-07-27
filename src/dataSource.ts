@@ -7,7 +7,7 @@ import { AskpassEnvironment, AskpassManager } from './askpass/askpassManager';
 import { getConfig } from './config';
 import { Logger } from './logger';
 import { ActionedUser, CommitOrdering, DateType, DeepWriteable, ErrorInfo, ErrorInfoExtensionPrefix, GitCommit, GitCommitDetails, GitCommitStash, GitConfigLocation, GitFileChange, GitFileStatus, GitPushBranchMode, GitRepoConfig, GitRepoConfigBranches, GitResetMode, GitSignature, GitSignatureStatus, GitStash, GitTagDetails, MergeActionOn, RebaseActionOn, SquashMessageFormat, TagType, Writeable } from './types';
-import { GitExecutable, GitVersionRequirement, UNABLE_TO_FIND_GIT_MSG, UNCOMMITTED, abbrevCommit, constructIncompatibleGitVersionMessage, doesVersionMeetRequirement, getPathFromStr, getPathFromUri, openGitTerminal, pathWithTrailingSlash, realpath, resolveSpawnOutput, showErrorMessage } from './utils';
+import { GitExecutable, GitVersionRequirement, UNABLE_TO_FIND_GIT_MSG, UNCOMMITTED, constructIncompatibleGitVersionMessage, doesVersionMeetRequirement, getPathFromStr, getPathFromUri, openGitTerminal, pathWithTrailingSlash, realpath, resolveSpawnOutput, showErrorMessage } from './utils';
 import { Disposable } from './utils/disposable';
 import { Event } from './utils/event';
 
@@ -1175,27 +1175,28 @@ export class DataSource extends Disposable {
 	 * @param repo The path of the repository.
 	 * @param obj The object the current branch will be rebased onto.
 	 * @param actionOn Is the rebase on a branch or commit.
-	 * @param ignoreDate Is `--ignore-date` enabled.
 	 * @param interactive Should the rebase be performed interactively.
+	 * @param resetAuthorDate Resets to the current date/time.
+	 * @param resetCommitterDate If true then reset to the current date/time, otherwise copy the author date.
 	 * @returns The ErrorInfo from the executed command.
 	 */
-	public rebase(repo: string, obj: string, actionOn: RebaseActionOn, ignoreDate: boolean, interactive: boolean) {
+	public rebase(repo: string, obj: string, actionOn: RebaseActionOn, interactive: boolean, resetAuthorDate: boolean, resetCommitterDate: boolean) {
+
+		const args = ['rebase'];
 		if (interactive) {
-			return this.openGitTerminal(
-				repo,
-				'rebase --interactive ' + (getConfig().signCommits ? '-S ' : '') + (actionOn === RebaseActionOn.Branch ? obj.replace(/'/g, '"\'"') : obj),
-				'Rebase on "' + (actionOn === RebaseActionOn.Branch ? obj : abbrevCommit(obj)) + '"'
-			);
-		} else {
-			const args = ['rebase', obj];
-			if (ignoreDate) {
-				args.push('--ignore-date');
-			}
-			if (getConfig().signCommits) {
-				args.push('-S');
-			}
-			return this.runGitCommand(args, repo);
+			args.push('--interactive');
 		}
+		if (resetAuthorDate) {
+			args.push('--reset-author-date');
+		}
+		if (!resetCommitterDate) {
+			args.push('--committer-date-is-author-date');
+		}
+		if (getConfig().signCommits) {
+			args.push('-S');
+		}
+		args.push((actionOn === RebaseActionOn.Branch ? obj.replace(/'/g, '"\'"') : obj));
+		return this.runGitCommand(args, repo);
 	}
 
 

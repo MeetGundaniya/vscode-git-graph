@@ -536,7 +536,7 @@ export class GitGraphView extends Disposable {
 					command: 'rebase',
 					actionOn: msg.actionOn,
 					interactive: msg.interactive,
-					error: await this.dataSource.rebase(msg.repo, msg.obj, msg.actionOn, msg.ignoreDate, msg.interactive)
+					error: await this.dataSource.rebase(msg.repo, msg.obj, msg.actionOn, msg.interactive, msg.resetAuthorDate, msg.resetCommitterDate)
 				});
 				break;
 			case 'renameBranch':
