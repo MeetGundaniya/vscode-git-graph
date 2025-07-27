@@ -618,7 +618,7 @@
 				},
 				"git-graph.dialog.merge.noCommit": {
 					"type": "boolean",
-					"default": false,
+					"default": true,
 					"description": "Default state of the \"No Commit\" checkbox."
 				},
 				"git-graph.dialog.merge.noFastForward": {

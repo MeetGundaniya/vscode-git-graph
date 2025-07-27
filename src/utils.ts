@@ -550,6 +550,14 @@ export function showInformationMessage(message: string) {
 }
 
 /**
+ * Show a Visual Studio Code Warning Message Dialog with the specified message.
+ * @param message The message to show.
+ */
+export function showWarningMessage(message: string) {
+	return vscode.window.showWarningMessage(message).then(() => { }, () => { });
+}
+
+/**
  * Show a Visual Studio Code Error Message Dialog with the specified message.
  * @param message The message to show.
  */
@@ -781,6 +789,7 @@ export async function getGitExecutableFromPaths(paths: string[]): Promise<GitExe
 /* Version Handling / Requirements */
 
 export const enum GitVersionRequirement {
+	Minimum = '2.0.0',
 	FetchAndPruneTags = '2.17.0',
 	GpgInfo = '2.4.0',
 	PushStash = '2.13.2',
