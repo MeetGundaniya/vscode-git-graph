@@ -215,7 +215,8 @@ class Config {
 			pullBranch: {
 				noFastForward: !!this.config.get('dialog.pullBranch.noFastForward', false),
 				noCommit: !!this.config.get('dialog.pullBranch.noCommit', false),
-				squash: !!this.config.get('dialog.pullBranch.squashCommits', false)
+				squash: !!this.config.get('dialog.pullBranch.squashCommits', false),
+				rebase: !!this.config.get('dialog.pullBranch.rebaseBranch', false)
 			},
 			rebase: {
 				ignoreDate: !!this.config.get('dialog.rebase.ignoreDate', true),

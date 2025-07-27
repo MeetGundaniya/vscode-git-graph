@@ -501,7 +501,8 @@ export interface DialogDefaults {
 	readonly pullBranch: {
 		readonly noFastForward: boolean,
 		readonly noCommit: boolean,
-		readonly squash: boolean
+		readonly squash: boolean,
+		readonly rebase: boolean
 	};
 	readonly rebase: {
 		readonly ignoreDate: boolean,
@@ -652,6 +653,7 @@ export interface RequestCheckoutBranch extends RepoRequest {
 		readonly createNewCommit: boolean;
 		readonly noCommit: boolean;
 		readonly squash: boolean;
+		readonly rebase: boolean;
 	} | null; // NULL => Don't pull after checking out
 }
 export interface ResponseCheckoutBranch extends ResponseWithMultiErrorInfo {
@@ -1065,6 +1067,7 @@ export interface RequestPullBranch extends RepoRequest {
 	readonly createNewCommit: boolean;
 	readonly noCommit: boolean;
 	readonly squash: boolean;
+	readonly rebase: boolean;
 }
 export interface ResponsePullBranch extends ResponseWithErrorInfo {
 	readonly command: 'pullBranch';

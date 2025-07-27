@@ -659,6 +659,11 @@
 					"default": false,
 					"description": "Default state of the \"Squash Commits\" checkbox."
 				},
+				"git-graph.dialog.pullBranch.rebaseBranch": {
+					"type": "boolean",
+					"default": false,
+					"description": "Default state of the \"With rebase\" checkbox."
+				},
 				"git-graph.dialog.pullBranch.squashMessageFormat": {
 					"type": "string",
 					"enum": [

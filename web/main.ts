@@ -1329,9 +1329,10 @@ class GitGraphView {
 					dialog.showForm('Are you sure you want to pull the remote branch <b><i>' + escapeHtml(refName) + '</i></b> into ' + (this.gitBranchHead !== null ? '<b><i>' + escapeHtml(this.gitBranchHead) + '</i></b> (the current branch)' : 'the current branch') + '? If a merge is required:', [
 						{ type: DialogInputType.Checkbox, name: 'Create a new commit even if fast-forward is possible', value: this.config.dialogDefaults.pullBranch.noFastForward },
 						{ type: DialogInputType.Checkbox, name: 'Do not create merge commit even if fast-forward is possible', value: this.config.dialogDefaults.pullBranch.noCommit },
-						{ type: DialogInputType.Checkbox, name: 'Squash Commits', value: this.config.dialogDefaults.pullBranch.squash, info: 'Create a single commit on the current branch whose effect is the same as merging this remote branch.' }
+						{ type: DialogInputType.Checkbox, name: 'Squash Commits', value: this.config.dialogDefaults.pullBranch.squash, info: 'Create a single commit on the current branch whose effect is the same as merging this remote branch.' },
+						{ type: DialogInputType.Checkbox, name: 'With rebase', value: this.config.dialogDefaults.pullBranch.rebase, info: 'Rebasing current branch commits on top of this remote branch.' }
 					], 'Yes, pull', (values) => {
-						runAction({ command: 'pullBranch', repo: this.currentRepo, branchName: branchName, remote: remote, createNewCommit: <boolean>values[0], noCommit: <boolean>values[1], squash: <boolean>values[2] }, 'Pulling Branch');
+						runAction({ command: 'pullBranch', repo: this.currentRepo, branchName: branchName, remote: remote, createNewCommit: <boolean>values[0], noCommit: <boolean>values[1], squash: <boolean>values[2], rebase: <boolean>values[3] }, 'Pulling Branch');
 					}, target);
 				}
 			}
@@ -1692,7 +1693,8 @@ class GitGraphView {
 									remote: remote,
 									createNewCommit: this.config.dialogDefaults.pullBranch.noFastForward,
 									noCommit: this.config.dialogDefaults.pullBranch.noCommit,
-									squash: this.config.dialogDefaults.pullBranch.squash
+									squash: this.config.dialogDefaults.pullBranch.squash,
+									rebase: this.config.dialogDefaults.pullBranch.rebase
 								}
 								: null
 						}, 'Checking out Branch' + (canPullFromRemote ? ' & Pulling Changes' : ''));

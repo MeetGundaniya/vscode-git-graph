@@ -998,7 +998,7 @@ export class DataSource extends Disposable {
 				});
 
 				if (localHead !== upstreamHead) {
-					this.pullBranch(submodulePath, branchePointsAtCommit, remote, false, true, false);
+					this.pullBranch(submodulePath, branchePointsAtCommit, remote, false, true, false, false);
 				}
 			}
 		}
@@ -1106,7 +1106,7 @@ export class DataSource extends Disposable {
 	 * @param squash Is `--squash` enabled if a merge is required.
 	 * @returns The ErrorInfo from the executed command.
 	 */
-	public pullBranch(repo: string, branchName: string, remote: string, createNewCommit: boolean, noCommit: boolean, squash: boolean) {
+	public pullBranch(repo: string, branchName: string, remote: string, createNewCommit: boolean, noCommit: boolean, squash: boolean, rebase: boolean) {
 		const args = ['pull', remote, branchName], config = getConfig();
 		if (squash) {
 			args.push('--squash');
@@ -1115,6 +1115,9 @@ export class DataSource extends Disposable {
 		}
 		if (noCommit) {
 			args.push('--no-commit');
+		}
+		if (rebase) {
+			args.push('--rebase');
 		}
 		if (config.signCommits) {
 			args.push('-S');

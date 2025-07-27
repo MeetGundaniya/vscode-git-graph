@@ -207,7 +207,7 @@ export class GitGraphView extends Disposable {
 			case 'checkoutBranch':
 				errorInfos = [await this.dataSource.checkoutBranch(msg.repo, msg.branchName, msg.remoteBranch)];
 				if (errorInfos[0] === null && msg.pullAfterwards !== null) {
-					errorInfos.push(await this.dataSource.pullBranch(msg.repo, msg.pullAfterwards.branchName, msg.pullAfterwards.remote, msg.pullAfterwards.createNewCommit, msg.pullAfterwards.noCommit, msg.pullAfterwards.squash));
+					errorInfos.push(await this.dataSource.pullBranch(msg.repo, msg.pullAfterwards.branchName, msg.pullAfterwards.remote, msg.pullAfterwards.createNewCommit, msg.pullAfterwards.noCommit, msg.pullAfterwards.squash, msg.pullAfterwards.rebase));
 				}
 				this.sendMessage({
 					command: 'checkoutBranch',
@@ -505,7 +505,7 @@ export class GitGraphView extends Disposable {
 			case 'pullBranch':
 				this.sendMessage({
 					command: 'pullBranch',
-					error: await this.dataSource.pullBranch(msg.repo, msg.branchName, msg.remote, msg.createNewCommit, msg.noCommit, msg.squash)
+					error: await this.dataSource.pullBranch(msg.repo, msg.branchName, msg.remote, msg.createNewCommit, msg.noCommit, msg.squash, msg.rebase)
 				});
 				break;
 			case 'pushBranch':
